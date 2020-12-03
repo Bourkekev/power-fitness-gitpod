@@ -12,7 +12,16 @@ import stripe
 
 @login_required
 def membership_dashboard(request):
-    return render(request, 'memberships/memberships-dashboard.html')
+    # Retrieve the subscription & product
+    stripe_customer = StripeSubscription.objects.get(user=request.user)
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    subscription = stripe.Subscription.retrieve(stripe_customer.stripeSubscriptionId)
+    product = stripe.Product.retrieve(subscription.plan.product)
+
+    return render(request, 'memberships/memberships-dashboard.html', {
+        'subscription': subscription,
+        'product': product,
+    })
 
 
 @csrf_exempt
@@ -25,7 +34,7 @@ def stripe_config(request):
 @csrf_exempt
 def create_checkout_session(request):
     if request.method == 'GET':
-        domain_url = 'http://127.0.0.1:8000/'
+        domain_url = settings.DOMAIN_URL
         stripe.api_key = settings.STRIPE_SECRET_KEY
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -78,7 +87,6 @@ def subscription_webhook(request):
     # Handle the customer.subscription.created event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        # session = event.data.object
 
         # Fetch all the required data from session
         client_reference_id = session.get('client_reference_id')
@@ -88,7 +96,7 @@ def subscription_webhook(request):
 
         # Get the user and create a new StripeCustomer
         user = User.objects.get(id=client_reference_id)
-        # print('User :' + user)
+        print(user)
         StripeSubscription.objects.create(
             user=user,
             stripeCustomerId=stripe_customer_id,

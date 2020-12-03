@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEVELOPMENT' in os.environ
 
-ALLOWED_HOSTS = ['power-fitness.herokuapp.com', '744d01410062.ngrok.io', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['power-fitness.herokuapp.com', '744d01410062.ngrok.io', '127.0.0.1', 'localhost', 'e08b40d9-27c9-4238-858a-58af006fe61f.ws-eu01.gitpod.io']
 
 
 # Application definition
@@ -118,6 +118,7 @@ SITE_ID = 1
 if 'DEVELOPMENT' in os.environ:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     DEFAULT_FROM_EMAIL = 'bourkekev+fitness@gmail.com'
+    DOMAIN_URL = 'http://127.0.0.1:8000/'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_USE_TLS = True
