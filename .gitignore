@@ -1,6 +1,9 @@
+*.sqlite3
+*.pyc
+__pycache__
+.vscode/
+env.py
 core.Microsoft*
 core.mongo*
 core.python*
-env.py
-__pycache__/
 *.py[cod]

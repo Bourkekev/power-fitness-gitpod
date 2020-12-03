@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_header %}
+    <div class="container header-container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h1 class="display-3">Editing - {{ product  }}</h1>
+            </div>
+        </div>
+    </div>
+{% endblock page_header%}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6 offset-md-3">
+            <form method="POST" action="{% url 'edit_product' product.id %}" class="form mb-2" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="text-center">
+                    <a href="{% url 'products' %}" class="btn btn-lg btn-outline-secondary rounded-0 mr-sm-4 mt-3">Cancel</a>
+                    <button type="submit" class="btn btn-lg btn-primary rounded-0 mt-3">Update Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block postloadjs %}
+    {{ block.super }}
+        <script src="{% static 'js/product_form.js' %}"></script>
+{% endblock %}

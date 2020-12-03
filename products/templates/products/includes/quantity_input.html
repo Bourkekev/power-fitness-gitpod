@@ -1,0 +1,40 @@
+<script type="text/javascript">
+    // Check inputs on page load
+    const allQtyInputs = $('.qty_input');
+    for(let i = 0; i < allQtyInputs.length; i++){
+        let itemId = $(allQtyInputs[i]).data('item_id');
+        handleEnableDisable(itemId);
+    }
+    // Check  enable/disable when input changes
+    $('.qty_input').change(function(){
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    });
+
+    $('.qty-plus').click(function(e){
+        e.preventDefault();
+        let lineItemInput = $(this).siblings('.qty_input')[0];
+        let currentValue = parseInt($(lineItemInput).val());
+        $(lineItemInput).val(currentValue + 1);
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    })
+    $('.qty-minus').click(function(e){
+        e.preventDefault();
+        let lineItemInput = $(this).siblings('.qty_input')[0];
+        let currentValue = parseInt($(lineItemInput).val());
+        $(lineItemInput).val(currentValue - 1);
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    })
+    /* Handle enabling and disable of qty buttons outside range 1-98 */
+    function handleEnableDisable(itemId) {
+        let currentValue = parseInt($(`#id_qty_${itemId}`).val());
+        let minusDisabled = currentValue < 2;
+        let plusDisabled = currentValue > 98;
+
+        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
+        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+    }
+
+</script>

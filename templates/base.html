@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block meta %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta name="Description" content="Become a member of Power Fitness Gym and purchase gym and training equipment." />
+    {% endblock meta %}
+
+    {% block extra_meta %}
+	{% endblock %}
+    <!-- Favicon and theme colour -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'images/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'images/safari-pinned-tab.svg' %}" color="#f39200">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-config" content="{% static 'images/browserconfig.xml' %}">
+    <meta name="theme-color" content="#f39200">
+    {% block corecss %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo+Narrow:wght@400;700&family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% endblock corecss %}
+
+    {% block extra_css %}
+	{% endblock %}
+    
+    {% block corejs %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js" integrity="sha512-ubuT8Z88WxezgSqf3RLuNi5lmjstiJcyezx34yIU2gAHonIi27Na7atqzUZCOoY4CExaoFumzOsFQ2Ch+I/HCw==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js" integrity="sha512-8qmis31OQi6hIRgvkht0s6mCOittjMa9GMqtK9hes5iEQBQE/Ca6yGE5FsW36vyipGoWQswBj/QBm2JR086Rkw==" crossorigin="anonymous"></script>
+        <!-- Stripe -->
+        <script src="https://js.stripe.com/v3/"></script>
+    {% endblock corejs %}
+
+    {% block extra_js %}
+	{% endblock %}
+
+    <title>Power Fitness Gym {% block extra_title %}{% endblock %}</title>
+    
+</head>
+
+<body>
+    <a href="#maincontent" class="screen-reader-link sr-only">Skip to main content</a>
+    <header class="p-0">
+        <div class="row no-gutters align-items-center">
+            <div class="col-12 col-lg-3 col-xl-2 ">
+                <a class="navbar-brand logo" href="{% url 'home'%}"><img src="{% static 'images/power-fitness-logo.svg' %}" alt="Power Fitness Gym"></a>
+            </div>
+            <div class="col-12 col-lg-9 col-xl-10 ">
+                {% include 'includes/nav-top-header.html' %}
+                {% include 'includes/nav-bottom-header.html' %}
+            </div>
+        </div>
+    </header>
+    {% if messages %}
+        <div class="toast-container" aria-live="polite" aria-atomic="true">
+            {% for message in messages %}
+                {% with message.level as level %}
+                    {% if level == 40 %}
+                        {% include 'includes/toasts/toast_error.html' %}
+                    {% elif level == 30 %}
+                        {% include 'includes/toasts/toast_warning.html' %}
+                    {% elif level == 25 %}
+                        {% include 'includes/toasts/toast_success.html' %}
+                    {% else %}
+                        {% include 'includes/toasts/toast_info.html' %}
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% block page_header %}
+    {% endblock page_header %}
+    <main id="maincontent">
+        {% block content %}
+        {% endblock %}
+    </main>
+    {% include 'includes/footer.html' %}
+    
+    <a href="#" class="back-to-top" title="Back To Top">
+    </a>
+    {% block postloadjs %}
+        <script src="{% static 'js/global.js' %}"></script>
+    {% endblock %}
+
+</body>
+
+</html>

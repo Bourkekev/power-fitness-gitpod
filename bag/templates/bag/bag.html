@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+{% load bag_tools %}
+
+{% block page_header %}
+    <div class="container-fluid bg-secondary text-white py-3">
+        <div class="row text-center">
+            <div class="col">
+                <p class="my-1 font-archivo-black display-4">Free delivery on orders over €{{ free_delivery_threshold }}!</p>
+            </div>
+        </div>
+    </div>
+    <div class="container header-container">
+        <div class="row text-center">
+            <div class="col">
+                <h1>Your shopping bag</h1>
+            </div>
+        </div>
+    </div>
+{% endblock page_header%}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if bag_items %}
+                <div class="table-responsive mt-5">
+                    <table class="table shopping-bag-table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in bag_items %}
+                                <tr>
+                                    <td>
+                                        {% if item.product.image %}
+                                            <img class="img-fluid bag-product-image d-none d-sm-inline-block" src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                        {% else %}
+                                            <img class="img-fluid bag-product-image d-none d-sm-inline-block" src="{{ MEDIA_URL }}no-image.png" alt="{{ item.product.name }}">
+                                        {% endif %}
+                                        <h3 class="bag-product-name">{{ item.product.name }}</h3>
+                                        <p class="my-0"><strong>Size: </strong>
+                                            {% if item.product.clothing_sizes %}
+                                                {{ item.clothing_size|upper }}
+                                            {% elif item.product.shoe_sizes %}
+                                                {{ item.shoesize|upper }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
+                                        </p>
+                                        <p class="my-0 small text-muted">SKU: {{ item.product.sku|upper }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="my-0">€{{ item.product.price }}</p>
+                                    </td>
+                                    <td>
+                                        <form class="form update-form" method="POST" action="{% url 'adjust_bag' item.item_id %}">
+                                            {% csrf_token %}
+                                            <div class="form-group w-100 qty-btns">
+                                                <label for="quantity" class="mt-3 sr-only"><strong>Quantity:</strong></label>
+                                                <div class="input-group">
+                                                    <button class="qty-btn qty-minus btn-secondary" 
+                                                    data-item_id="{{ item.item_id }}" 
+                                                    id="decrement-qty_{{ item.item_id }}">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input class="form-control qty_input" type="number" name="quantity" 
+                                                    value="{{ item.quantity }}" min="1" max="99" data-item_id="{{ item.item_id }}" 
+                                                    id="id_qty_{{ item.item_id }}">
+                                                    <button class="qty-btn qty-plus btn-secondary" 
+                                                    data-item_id="{{ item.item_id }}" 
+                                                    id="increment-qty_{{ item.item_id }}">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            {% if item.product.clothing_sizes %}
+                                                <input type="hidden" name="clothing_size" value="{{ item.clothing_size }}">
+                                            {% endif %}
+                                            {% if item.product.shoe_sizes %}
+                                                <input type="hidden" name="shoe_size" value="{{ item.shoesize }}">
+                                            {% endif %}
+                                        </form>
+                                        <a class="update-link text-info"><small>Update</small></a>
+                                    </td>
+                                    <td>
+                                        <p class="my-0">€{{ item.product.price | calc_subtotal:item.quantity }}</p>
+                                            <a class="remove-item text-danger float-right" 
+                                            id="remove_{{ item.item_id }}" 
+                                            {% if item.product.shoe_sizes %}
+                                                data-shoe_size="{{ item.shoesize }}"
+                                            {% endif %}
+                                            {% if item.product.clothing_sizes %}
+                                                data-clothing_size="{{ item.clothing_size }}"
+                                            {% endif %}
+                                            aria-label="Remove this item"
+                                            title="Remove this item"><i class="fas fa-trash-alt"></i></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive mt-5">
+                    <h2 class="text-center my-5">Shopping Bag Totals</h2>
+                    <table class="table table-borderless bag-totals">
+                        <tbody>
+                            <tr class="cart-order-total">
+                                <th class="p-4">Shopping Bag Total</th>
+                                <td class="text-right p-4"><strong> €{{ total|floatformat:2 }}</strong></td>
+                            </tr>
+                            <tr class="cart-order-delivery">
+                                <th class="p-4">Delivery</th>
+                                <td class="text-right p-4"><strong> €{{ delivery|floatformat:2 }}</strong></td>
+                            </tr>
+                            {% if left_to_free_delivery > 0 %}
+                                <tr class="mb-1 text-info">
+                                    <td colspan="2">You could get free delivery by spending just <strong>€{{ left_to_free_delivery }}</strong> more!</td>
+                                </tr>
+                            {% endif %}
+                            <tr class="cart-order-total">
+                                <th class="p-4">Grand Total</th>
+                                <td class="text-right p-4"><strong> €{{ grand_total|floatformat:2 }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="container px-0">
+                        <div class="row no-gutters py-3">
+                            <div class="col-12 col-md-6 order-md-1 text-md-right">
+                                <a href="{% url 'checkout' %}" class="btn btn-primary rounded-0 btn-lg my-3 w-100 w-md-auto">
+                                    <span class="text-uppercase">Secure Checkout <i class="fas fa-chevron-right"></i></span>
+                                </a>
+                            </div>
+                            <div class="col-12 col-md-6 order-md-0">
+                                <a href="{% url 'products' %}" class="btn btn-outline-secondary rounded-0 btn-lg my-3 w-100 w-md-auto">
+                                    <span class="text-uppercase"><i class="fas fa-chevron-left"></i> Keep Shopping</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="lead mb-5">Your bag is empty.</p>
+                <a href="{% url 'products' %}" class="btn btn-primary rounded-0 btn-lg">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="text-uppercase">Keep Shopping</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+{% include 'products/includes/quantity_input.html' %}
+<script type="text/javascript">
+    // Update quantity amount
+    $('.update-link').click(function(e) {
+        let form = $(this).prev('.update-form');
+        form.submit();
+    })
+
+    /* Remove item and reload
+    ** Technique provided by Code Institute */
+    $('.remove-item').click(function(e) {
+        let csrfToken = "{{ csrf_token }}";
+        let itemId = $(this).attr('id').split('remove_')[1];
+        let shoe_size = $(this).data('shoe_size');
+        let clothing_size = $(this).data('clothing_size');
+        let url = `/bag/remove/${itemId}/`;
+        let data = {'csrfmiddlewaretoken': csrfToken, 'shoe_size': shoe_size, 'clothing_size': clothing_size };
+
+        $.post(url, data)
+         .done(function() {
+             location.reload();
+         });
+    })
+</script>
+{% endblock %}
