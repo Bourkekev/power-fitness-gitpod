@@ -12,16 +12,19 @@ import stripe
 
 @login_required
 def membership_dashboard(request):
-    # Retrieve the subscription & product
-    stripe_customer = StripeSubscription.objects.get(user=request.user)
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    subscription = stripe.Subscription.retrieve(stripe_customer.stripeSubscriptionId)
-    product = stripe.Product.retrieve(subscription.plan.product)
+    try:
+        # Retrieve the subscription & product
+        stripe_customer = StripeSubscription.objects.get(user=request.user)
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        subscription = stripe.Subscription.retrieve(stripe_customer.stripeSubscriptionId)
+        product = stripe.Product.retrieve(subscription.plan.product)
 
-    return render(request, 'memberships/memberships-dashboard.html', {
-        'subscription': subscription,
-        'product': product,
-    })
+        return render(request, 'memberships/memberships-dashboard.html', {
+            'subscription': subscription,
+            'product': product,
+        })
+    except StripeSubscription.DoesNotExist:
+        return render(request, 'memberships/memberships-dashboard.html')
 
 
 @csrf_exempt
@@ -87,6 +90,7 @@ def subscription_webhook(request):
     # Handle the customer.subscription.created event
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+        # session = event.data.object
 
         # Fetch all the required data from session
         client_reference_id = session.get('client_reference_id')
@@ -96,12 +100,18 @@ def subscription_webhook(request):
 
         # Get the user and create a new StripeCustomer
         user = User.objects.get(id=client_reference_id)
-        print(user)
+        # print('User :' + user)
         StripeSubscription.objects.create(
             user=user,
             stripeCustomerId=stripe_customer_id,
             stripeSubscriptionId=stripe_subscription_id,
         )
         print(user.username + ' just subscribed.')
+
+    elif event['type'] == 'payment_intent.succeeded':
+        print("Payment intent succeeded.")
+
+    else:
+        print("WH event not handled")
 
     return HttpResponse(status=200)
