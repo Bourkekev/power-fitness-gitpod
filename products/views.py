@@ -5,8 +5,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.db.models.functions import Lower
 
-from .models import Product, Category
-from .forms import ProductForm
+from .models import Product, Category, Review
+from .forms import ProductForm, ReviewForm
 
 
 def all_products(request):
@@ -68,9 +68,11 @@ def product_detail(request, product_id):
     """ A view to show individual product detail """
 
     product = get_object_or_404(Product, pk=product_id)
+    reviews = Review.objects.filter(product=product)
 
     context = {
         'product': product,
+        'reviews': reviews
     }
     return render(request, 'products/product_detail.html', context)
 
@@ -149,3 +151,34 @@ def delete_product(request, product_id):
     product.delete()
     messages.success(request, 'Product deleted!')
     return redirect(reverse('products'))
+
+
+def review_product(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+    print(product)
+    if request.method == 'POST':
+        # print(request.user)
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.reviewer = request.user
+            # print(product.id)
+            review.product = product
+            review.save()
+            messages.success(request, 'Product review successfully submitted')
+            print("success")
+            return redirect(reverse('product_detail', args=[product.id]))
+        else:
+            print("fail")
+            messages.error(request,
+                           'Failed to add product review. \
+                            Please ensure the form is valid.')
+    else:
+        form = ReviewForm(instance=product)
+    template = 'products/add_review.html'
+    context = {
+        'form': form,
+        'product': product,
+    }
+
+    return render(request, template, context)
