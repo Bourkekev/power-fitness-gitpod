@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'checkout',
     'profiles',
     'memberships',
+    'news',
 
     # Other
     'multiselectfield',
