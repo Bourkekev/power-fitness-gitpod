@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "596687d58f737291847de6487593f2f9a13c3d2ffcb71c3de4beef0bb1498468"
+            "sha256": "7b760fda38445901e7ec14a8c7b3451164f0a3c893e11af1acdadf5cac8ce106"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -34,10 +34,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:034dadecf19293a15da40272073093049519575df2b438954e2da0ffb7b8279f",
-                "sha256:88334b0a80416d3b662bba2067cc48afe9fd1515c3b8413d592a1933e41ce55a"
+                "sha256:ad4adfcc195b5401d84b0c65d3a89e507c1d54c201879c8761ff10ef5c361e21",
+                "sha256:d3694f6ef918def8082513e5ef309cd6cd83b612e9984e3a66e8adc98c650a92"
             ],
-            "version": "==1.19.26"
+            "version": "==1.19.63"
         },
         "certifi": {
             "hashes": [
@@ -143,11 +143,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:14a4b7cd77297fba516fc0d92444cc2e2e388aa9de32d7a68d4a83d58f5a4927",
-                "sha256:14b87775ffedab2ef6299b73343d1b4b41e5d4e2aa58c6581f114dbec01e3f8f"
+                "sha256:9f8be75646f62204320b195062b1d696ba28aa3d45ee72fb7c888ffaebc5bdb2",
+                "sha256:a6e0d1ff11095b7394c079ade7094c73b2dc3df4a7a373c9b58ed73b77a97feb"
             ],
             "index": "pypi",
-            "version": "==3.1.3"
+            "version": "==3.1.13"
         },
         "django-allauth": {
             "hashes": [
@@ -316,11 +316,11 @@
         },
         "python-dateutil": {
             "hashes": [
-                "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c",
-                "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"
+                "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86",
+                "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==2.8.1"
+            "version": "==2.8.2"
         },
         "python3-openid": {
             "hashes": [
@@ -357,10 +357,10 @@
         },
         "s3transfer": {
             "hashes": [
-                "sha256:2482b4259524933a022d59da830f51bd746db62f047d6eb213f2f8855dcb8a13",
-                "sha256:921a37e2aefc64145e7b73d50c71bb4f26f46e4c9f414dc648c6245ff92cf7db"
+                "sha256:35627b86af8ff97e7ac27975fe0a98a312814b46c6333d8a6b889627bcd80994",
+                "sha256:efa5bd92a897b6a8d5c1383828dca3d52d0790e0756d49740563a3fb6ed03246"
             ],
-            "version": "==0.3.3"
+            "version": "==0.3.7"
         },
         "six": {
             "hashes": [
